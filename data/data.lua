@@ -1,1 +1,1 @@
-require("__long_range_delivery_drones_patched__/data/long-range-delivery-drone/long-range-delivery-drone")
+require("__long-range-delivery-drones-patched__/data/long-range-delivery-drone/long-range-delivery-drone")
