@@ -28,7 +28,7 @@ local ceil = math.ceil
 local floor = math.floor
 local min = math.min
 local max = math.max
-local atan2 = math.atan2
+local atan2 = math.atan -- math.atan2 is deprecated?
 local tau = 2 * math.pi
 local table_insert = table.insert
 local sin = math.sin
@@ -317,6 +317,14 @@ Drone.deliver_to_target = function(self)
 	local delivery_time
 	local source_scheduled = self.scheduled
 	local name, quality_count = next(source_scheduled)
+
+	-- if there is nothing to deliver, why are we even here?
+	if not quality_count then
+		self:say("Nothing to deliver! How did we get here?")
+		self:schedule_suicide()
+		return
+	end
+
 	local quality, count = next(quality_count)
 	if name and quality and count then
 		count = min(count, get_stack_size(name))
@@ -536,22 +544,44 @@ Depot.get_available_capacity = function(self, item_name, item_quality)
 	)
 end
 
+local function safe_number(value)
+	return type(value) == "number" and value or 0
+end
+
 Depot.update_logistic_filters = function(self)
 	local slot_index = 1
 
 	if next(self.scheduled) then
-		if not self.logistic_section.valid then
+    -- make new logistics section if does not exist
+		if not self.logistic_section or not self.logistic_section.valid then
 			self.logistic_section =
 				self.entity.get_logistic_point(defines.logistic_member_index.logistic_container).add_section()
 		end
-		self.logistic_section.set_slot(slot_index, { value = DRONE_NAME, min = 1 + (self.scheduled[DRONE_NAME] or 0) })
-		slot_index = slot_index + 1
+
+		if not self.logistic_section.is_manual then
+			log("Cannot set slot: section not manual")
+			return
+		end
+
+    -- always allocate at least one drone
+    -- if the drone is carrying drones, allocate more to slot as necessary
+    -- TODO: figure out why this doesn't work :/
+		self.logistic_section.set_slot(
+			slot_index,
+			{ value = DRONE_NAME, min = 1 + safe_number(self.scheduled[DRONE_NAME]) }
+		)
+
+    -- set the rest of the slots based on schedule pairs
+    slot_index = slot_index + 1
 		for name, quality_count in pairs(self.scheduled) do
 			for quality, count in pairs(quality_count) do
 				if name ~= DRONE_NAME then
 					self.logistic_section.set_slot(
 						slot_index,
-						{ value = { name = name, quality = quality }, min = count }
+						{
+							value = { name = name, quality = quality },
+							min = safe_number(count),
+						}
 					)
 					slot_index = slot_index + 1
 				end
@@ -559,8 +589,13 @@ Depot.update_logistic_filters = function(self)
 		end
 	end
 
-	for i = slot_index, self.logistic_section.filters_count do
-		self.logistic_section.clear_slot(i)
+	-- clean up all following slots afterward (but only if logistic section exists)
+	if self.logistic_section then
+		for i = slot_index, self.logistic_section.filters_count do
+			if self.logistic_section.is_manual then
+				self.logistic_section.clear_slot(i)
+			end
+		end
 	end
 end
 
@@ -1204,7 +1239,7 @@ local update_request_depots = function(tick)
 		script_data.next_request_depot_update_index = nil
 		return
 	end
-	if depot:update() then
+	if depot and depot:update() then
 		script_data.request_depots[unit_number] = nil
 		script_data.next_request_depot_update_index = nil
 	else
@@ -1223,7 +1258,7 @@ local update_depots = function(tick)
 		script_data.next_depot_update_index = nil
 		return
 	end
-	if depot:update() then
+	if depot and depot:update() then
 		script_data.depots[unit_number] = nil
 		script_data.next_depot_update_index = nil
 	else

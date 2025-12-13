@@ -10,5 +10,10 @@
     "codestyle-check",
     "undefined-global",
     "spell-check"
+  ],
+  "Lua.diagnostics.globals": [
+    "util",
+    "sounds",
+    "hit_effects"
   ]
 }

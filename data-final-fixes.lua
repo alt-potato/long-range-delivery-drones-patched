@@ -25,7 +25,7 @@ local make_delivery_particle = function(item)
 		for k = 1, stack_size do
 			local last = (k == stack_size)
 			local shift = (last and { 0, 0 }) or { 0.5 * (math.random() - 0.5), 0.5 * math.random() }
-			local scale = (last and 1) or 0.4 + 0.6 * math.random()
+			local scale = (last and 1) or (0.4 + 0.6 * math.random()) -- sure hope this is right
 			for j, layer in pairs(layers) do
 				local picture = util.copy(layer)
 				picture.shift = { picture.shift[1] + shift[1], picture.shift[2] + shift[2] }
