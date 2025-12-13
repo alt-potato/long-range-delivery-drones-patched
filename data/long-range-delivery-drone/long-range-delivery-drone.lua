@@ -6,7 +6,7 @@ local depot =
   name = "long-range-delivery-drone-depot",
   localised_name = {"long-range-delivery-drone-depot"},
   localised_description = {"long-range-delivery-drone-depot-description"},
-  icon = "__Long_Range_Delivery_Drones__/data/long-range-delivery-drone/depot-icon.png",
+  icon = "__long_range_delivery_drones_patched__/data/long-range-delivery-drone/depot-icon.png",
   icon_size = 64,
   flags = {"placeable-player", "player-creation"},
   minable = {mining_time = 1, result = "long-range-delivery-drone-depot"},
@@ -43,7 +43,7 @@ local depot =
     layers =
     {
       {
-        filename = "__Long_Range_Delivery_Drones__/data/long-range-delivery-drone/depot.png",
+        filename = "__long_range_delivery_drones_patched__/data/long-range-delivery-drone/depot.png",
         width = 224,
         height = 224,
         frame_count = 1,
@@ -130,7 +130,7 @@ local request_depot =
   name = "long-range-delivery-drone-request-depot",
   localised_name = {"long-range-delivery-drone-request-depot"},
   localised_description = {"long-range-delivery-drone-request-depot-description"},
-  icon = "__Long_Range_Delivery_Drones__/data/long-range-delivery-drone/request-depot-icon.png",
+  icon = "__long_range_delivery_drones_patched__/data/long-range-delivery-drone/request-depot-icon.png",
   icon_size = 64,
   flags = {"placeable-player", "player-creation"},
   minable = {mining_time = 1, result = "long-range-delivery-drone-request-depot"},
@@ -164,7 +164,7 @@ local request_depot =
     layers =
     {
       {
-        filename = "__Long_Range_Delivery_Drones__/data/long-range-delivery-drone/request-depot.png",
+        filename = "__long_range_delivery_drones_patched__/data/long-range-delivery-drone/request-depot.png",
         priority = "extra-high",
         width = 128,
         height = 196,
@@ -173,7 +173,7 @@ local request_depot =
         scale = 0.5
       },
       {
-        filename = "__Long_Range_Delivery_Drones__/data/long-range-delivery-drone/request-depot-shadow.png",
+        filename = "__long_range_delivery_drones_patched__/data/long-range-delivery-drone/request-depot-shadow.png",
         priority = "extra-high",
         width = 173,
         height = 76,
@@ -248,7 +248,7 @@ local delivery_drone =
   type = "car",
   name = "long-range-delivery-drone",
   localised_name = {"long-range-delivery-drone"},
-  icon = "__Long_Range_Delivery_Drones__/data/long-range-delivery-drone/drone-item-icon.png",
+  icon = "__long_range_delivery_drones_patched__/data/long-range-delivery-drone/drone-item-icon.png",
   icon_size = 64,
   flags = {"placeable-neutral", "player-creation", "placeable-off-grid", "not-flammable", "no-automated-item-removal", "no-automated-item-insertion"},
   --minable = {mining_time = 0.4, result = "car"},
@@ -424,22 +424,22 @@ local delivery_drone =
         stripes =
         {
           {
-            filename = "__Long_Range_Delivery_Drones__/data/long-range-delivery-drone/drone-a.png",
+            filename = "__long_range_delivery_drones_patched__/data/long-range-delivery-drone/drone-a.png",
             width_in_frames = 8,
             height_in_frames = 8
           },
           {
-            filename = "__Long_Range_Delivery_Drones__/data/long-range-delivery-drone/drone-b.png",
+            filename = "__long_range_delivery_drones_patched__/data/long-range-delivery-drone/drone-b.png",
             width_in_frames = 8,
             height_in_frames = 8
           },
           {
-            filename = "__Long_Range_Delivery_Drones__/data/long-range-delivery-drone/drone-c.png",
+            filename = "__long_range_delivery_drones_patched__/data/long-range-delivery-drone/drone-c.png",
             width_in_frames = 8,
             height_in_frames = 8
           },
           {
-            filename = "__Long_Range_Delivery_Drones__/data/long-range-delivery-drone/drone-d.png",
+            filename = "__long_range_delivery_drones_patched__/data/long-range-delivery-drone/drone-d.png",
             width_in_frames = 8,
             height_in_frames = 8
           }
@@ -455,22 +455,22 @@ local delivery_drone =
         stripes =
         {
           {
-            filename = "__Long_Range_Delivery_Drones__/data/long-range-delivery-drone/drone-msk-a.png",
+            filename = "__long_range_delivery_drones_patched__/data/long-range-delivery-drone/drone-msk-a.png",
             width_in_frames = 8,
             height_in_frames = 8
           },
           {
-            filename = "__Long_Range_Delivery_Drones__/data/long-range-delivery-drone/drone-msk-b.png",
+            filename = "__long_range_delivery_drones_patched__/data/long-range-delivery-drone/drone-msk-b.png",
             width_in_frames = 8,
             height_in_frames = 8
           },
           {
-            filename = "__Long_Range_Delivery_Drones__/data/long-range-delivery-drone/drone-msk-c.png",
+            filename = "__long_range_delivery_drones_patched__/data/long-range-delivery-drone/drone-msk-c.png",
             width_in_frames = 8,
             height_in_frames = 8
           },
           {
-            filename = "__Long_Range_Delivery_Drones__/data/long-range-delivery-drone/drone-msk-d.png",
+            filename = "__long_range_delivery_drones_patched__/data/long-range-delivery-drone/drone-msk-d.png",
             width_in_frames = 8,
             height_in_frames = 8
           }
@@ -534,7 +534,7 @@ local delivery_drone =
   {
     sound =
     {
-      filename = "__Long_Range_Delivery_Drones__/data/long-range-delivery-drone/engine.ogg",
+      filename = "__long_range_delivery_drones_patched__/data/long-range-delivery-drone/engine.ogg",
       volume = 0.4
     },
     poop_activate_sound =
@@ -561,7 +561,7 @@ local delivery_drone =
   terrain_friction_modifier = 0,
   minimap_representation =
   {
-    filename = "__Long_Range_Delivery_Drones__/data/long-range-delivery-drone/long-range-delivery-drone-map.png",
+    filename = "__long_range_delivery_drones_patched__/data/long-range-delivery-drone/long-range-delivery-drone-map.png",
     flags = {"icon"},
     size = {128, 128},
     scale = 0.5
@@ -614,22 +614,22 @@ local drone_shadow_animation =
   stripes =
   {
     {
-      filename = "__Long_Range_Delivery_Drones__/data/long-range-delivery-drone/drone-sh-a.png",
+      filename = "__long_range_delivery_drones_patched__/data/long-range-delivery-drone/drone-sh-a.png",
       width_in_frames = 8,
       height_in_frames = 8
     },
     {
-      filename = "__Long_Range_Delivery_Drones__/data/long-range-delivery-drone/drone-sh-b.png",
+      filename = "__long_range_delivery_drones_patched__/data/long-range-delivery-drone/drone-sh-b.png",
       width_in_frames = 8,
       height_in_frames = 8
     },
     {
-      filename = "__Long_Range_Delivery_Drones__/data/long-range-delivery-drone/drone-sh-c.png",
+      filename = "__long_range_delivery_drones_patched__/data/long-range-delivery-drone/drone-sh-c.png",
       width_in_frames = 8,
       height_in_frames = 8
     },
     {
-      filename = "__Long_Range_Delivery_Drones__/data/long-range-delivery-drone/drone-sh-d.png",
+      filename = "__long_range_delivery_drones_patched__/data/long-range-delivery-drone/drone-sh-d.png",
       width_in_frames = 8,
       height_in_frames = 8
     }
@@ -649,22 +649,22 @@ local animation =
       stripes =
       {
         {
-          filename = "__Long_Range_Delivery_Drones__/data/long-range-delivery-drone/drone-a.png",
+          filename = "__long_range_delivery_drones_patched__/data/long-range-delivery-drone/drone-a.png",
           width_in_frames = 8,
           height_in_frames = 8
         },
         {
-          filename = "__Long_Range_Delivery_Drones__/data/long-range-delivery-drone/drone-b.png",
+          filename = "__long_range_delivery_drones_patched__/data/long-range-delivery-drone/drone-b.png",
           width_in_frames = 8,
           height_in_frames = 8
         },
         {
-          filename = "__Long_Range_Delivery_Drones__/data/long-range-delivery-drone/drone-c.png",
+          filename = "__long_range_delivery_drones_patched__/data/long-range-delivery-drone/drone-c.png",
           width_in_frames = 8,
           height_in_frames = 8
         },
         {
-          filename = "__Long_Range_Delivery_Drones__/data/long-range-delivery-drone/drone-d.png",
+          filename = "__long_range_delivery_drones_patched__/data/long-range-delivery-drone/drone-d.png",
           width_in_frames = 8,
           height_in_frames = 8
         }
@@ -686,22 +686,22 @@ local shadow_animation =
       stripes =
       {
         {
-          filename = "__Long_Range_Delivery_Drones__/data/long-range-delivery-drone/drone-sh-a.png",
+          filename = "__long_range_delivery_drones_patched__/data/long-range-delivery-drone/drone-sh-a.png",
           width_in_frames = 8,
           height_in_frames = 8
         },
         {
-          filename = "__Long_Range_Delivery_Drones__/data/long-range-delivery-drone/drone-sh-b.png",
+          filename = "__long_range_delivery_drones_patched__/data/long-range-delivery-drone/drone-sh-b.png",
           width_in_frames = 8,
           height_in_frames = 8
         },
         {
-          filename = "__Long_Range_Delivery_Drones__/data/long-range-delivery-drone/drone-sh-c.png",
+          filename = "__long_range_delivery_drones_patched__/data/long-range-delivery-drone/drone-sh-c.png",
           width_in_frames = 8,
           height_in_frames = 8
         },
         {
-          filename = "__Long_Range_Delivery_Drones__/data/long-range-delivery-drone/drone-sh-d.png",
+          filename = "__long_range_delivery_drones_patched__/data/long-range-delivery-drone/drone-sh-d.png",
           width_in_frames = 8,
           height_in_frames = 8
         }
@@ -818,7 +818,7 @@ local technology =
   name = "long-range-delivery-drone",
   localised_name = {"long-range-delivery-drone"},
   localised_description = {"long-range-delivery-drone-description"},
-  icon = "__Long_Range_Delivery_Drones__/data/long-range-delivery-drone/tech-icon.png",
+  icon = "__long_range_delivery_drones_patched__/data/long-range-delivery-drone/tech-icon.png",
   icon_size = 128,
   effects =
   {
