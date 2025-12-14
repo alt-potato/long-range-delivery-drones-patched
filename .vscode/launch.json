@@ -22,7 +22,7 @@
       "name": "Factorio Mod Debug (Profile)",
       "hookMode": "profile",
       "hookControl": [
-        "Long_Range_Delivery_Drones"
+        "long-range-delivery-drones-patched"
       ],
       "profileUpdateRate": 50
     }
