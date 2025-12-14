@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.2.0
+Date: 2025-12-14
+  Changes:
+    - Add ability for long range drones to return to the depot after delivery completion.
+    - Add configurable attrition rate, which sets the rate that long range drones crash instead of returning to the depot.
+---------------------------------------------------------------------------------------------------
 Version: 2.1.1
 Date: 2025-12-13
   Changes:
