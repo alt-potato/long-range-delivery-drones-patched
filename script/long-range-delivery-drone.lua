@@ -9,6 +9,7 @@ local DRONE_TURN_SPEED = 1 / (60 * 5)
 local DRONE_HEIGHT = 8
 local DELIVERY_OFFSET = { 0, -DRONE_HEIGHT }
 local DELIVERY_DISTANCE = 25
+local RETURN_DISTANCE = 5
 local DRONE_NAME = "long-range-delivery-drone"
 local MAX_DELIVERY_STACKS = 5
 local MIN_DELIVERY_STACKS = 1
@@ -100,6 +101,7 @@ end
 
 local entity_say = function(entity, text, tint)
 	if entity.valid then
+		-- flying-text appears to be deprecated and needs replacement
 		entity.surface.create_entity({
 			name = "flying-text",
 			position = entity.position,
@@ -130,6 +132,7 @@ Drone.new = function(entity)
 		unit_number = entity.unit_number,
 		scheduled = {},
 		inventory = entity.get_inventory(defines.inventory.car_trunk),
+		state = "delivering", -- delivering | returning
 	}
 	setmetatable(self, Drone.metatable)
 	script.register_on_object_destroyed(entity)
@@ -184,9 +187,12 @@ Drone.get_orientation_to_position = function(self, position)
 	return orientation
 end
 
-Drone.get_delivery_position = function(self)
-	local position = self.delivery_target.position
+local apply_delivery_offset = function(position)
 	return { x = position.x + DELIVERY_OFFSET[1], y = position.y + DELIVERY_OFFSET[2] }
+end
+
+Drone.get_delivery_position = function(self)
+	return apply_delivery_offset(self.delivery_target.position)
 end
 
 Drone.get_distance_to_target = function(self)
@@ -204,7 +210,13 @@ Drone.get_time_to_next_update = function(self)
 	if self.needs_fast_update then
 		return 1
 	end
-	local distance = (self:get_distance_to_target() - DELIVERY_DISTANCE)
+
+	local distance
+	if self.state == "returning" then
+		distance = self:get_distance(self.source_depot.position) - RETURN_DISTANCE
+	else
+		distance = self:get_distance_to_target() - DELIVERY_DISTANCE
+	end
 	local time = distance / self.entity.speed
 	local ticks = floor(time * 0.5)
 	if ticks < 1 then
@@ -267,10 +279,33 @@ Drone.suicide = function(self)
 end
 
 Drone.schedule_suicide = function(self)
-	self.delivery_target:remove_targeting_me(self)
+	if self.delivery_target then
+		self.delivery_target:remove_targeting_me(self)
+	end
 	self.tick_to_suicide = game.tick + random(120, 300)
 	self.suicide_orientation = self.entity.orientation + ((0.5 - random()) * 2)
 	self:schedule_next_update(random(1, 30))
+end
+
+Drone.schedule_return = function(self)
+	-- random chance of attrition if attrition_rate > 0
+	local r = random()
+	if attrition_rate > 0 and (attrition_rate >= 1 or r < attrition_rate) then
+		-- self:say("i am die thank you forever")
+		self:schedule_suicide()
+		return
+	end
+
+	-- if depot is gone, fallback to suicide
+	if not self.source_depot or not self.source_depot.entity.valid then
+		self:schedule_suicide()
+		return
+	end
+	-- self:say("Going back")
+	self.delivery_target:remove_targeting_me(self)
+	self.delivery_target = nil
+	self.state = "returning" -- set return status
+	self:schedule_next_update(1)
 end
 
 local particle_cache = {}
@@ -356,7 +391,7 @@ Drone.deliver_to_target = function(self)
 	end
 
 	if not next(self.scheduled) then
-		self:schedule_suicide()
+		self:schedule_return()
 		return
 	end
 
@@ -476,7 +511,24 @@ Drone.update = function(self)
 		return
 	end
 
-	local target = self.delivery_target
+	-- get target destination
+
+	local target
+	local apply_offset
+	local min_arrival_speed
+	local arrival_threshold = 5
+
+	if self.state == "returning" then
+		target = self.source_depot
+		arrival_threshold = RETURN_DISTANCE
+	else
+		-- default to delivering
+		target = self.delivery_target
+		apply_offset = apply_delivery_offset
+		min_arrival_speed = DRONE_MAX_SPEED
+		arrival_threshold = DELIVERY_DISTANCE
+	end
+
 	if not target then
 		error("NO target?")
 	end
@@ -486,14 +538,32 @@ Drone.update = function(self)
 	end
 	--self:say("HI")
 
-	if self.entity.speed >= DRONE_MAX_SPEED and self:get_distance_to_target() <= DELIVERY_DISTANCE then
-		self:deliver_to_target()
-		return
+	-- if already in position, do action
+
+	local reached_target_speed = not min_arrival_speed or self.entity.speed >= min_arrival_speed
+	local target_position = apply_offset and apply_offset(target.position) or target.position
+	if reached_target_speed and self:get_distance(target_position) <= arrival_threshold then
+		if self.state == "delivering" then
+			self:deliver_to_target()
+			return
+		elseif self.state == "returning" then
+			-- arrived at depot, add drone back to depot
+			self.source_depot.inventory.insert({ name = DRONE_NAME, count = 1 })
+			script_data.drones[self.unit_number] = nil
+			self.entity.destroy()
+			return true
+		else
+			-- default to delivering?
+			self:deliver_to_target()
+			return
+		end
 	end
+
+	-- if not, route to target destination
 
 	self.needs_fast_update = false
 	self:update_speed()
-	self:update_orientation(self:get_orientation_to_position(self:get_delivery_position()))
+	self:update_orientation(self:get_orientation_to_position(target_position))
 	self:schedule_next_update(self:get_time_to_next_update())
 end
 
@@ -715,6 +785,7 @@ Depot.send_drone = function(self)
 	self:transfer_package(drone)
 
 	drone.delivery_target = target
+	drone.source_depot = self
 	target:add_targeting_me(drone)
 
 	self.delivery_target = nil
@@ -1232,6 +1303,13 @@ local on_script_trigger_effect = function(event)
 	end
 end
 
+local on_runtime_mod_setting_changed = function(event)
+	-- dynamically set runtime settings
+	if event.setting == "long-range-delivery-drones-patched-drone-attrition-rate" then
+		attrition_rate = settings.global["long-range-delivery-drones-patched-drone-attrition-rate"].value
+	end
+end
+
 local update_request_depots = function(tick)
 	local index = script_data.next_request_depot_update_index
 	if not index and tick % DEPOT_UPDATE_BREAK_TIME ~= 0 then
@@ -1406,6 +1484,7 @@ lib.events = {
 	[defines.events.on_gui_opened] = on_gui_opened,
 	[defines.events.on_gui_click] = on_gui_click,
 	[defines.events.on_tick] = on_tick,
+	[defines.events.on_runtime_mod_setting_changed] = on_runtime_mod_setting_changed,
 }
 
 lib.on_init = function()
