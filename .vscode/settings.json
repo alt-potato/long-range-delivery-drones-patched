@@ -15,5 +15,6 @@
     "util",
     "sounds",
     "hit_effects"
-  ]
+  ],
+  "Lua.runtime.version": "Lua 5.2"
 }
