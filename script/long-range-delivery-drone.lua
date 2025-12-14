@@ -28,7 +28,7 @@ local ceil = math.ceil
 local floor = math.floor
 local min = math.min
 local max = math.max
-local atan2 = math.atan -- math.atan2 is deprecated?
+local atan2 = math.atan2 -- math.atan2 is deprecated?
 local tau = 2 * math.pi
 local table_insert = table.insert
 local sin = math.sin
@@ -552,7 +552,7 @@ Depot.update_logistic_filters = function(self)
 	local slot_index = 1
 
 	if next(self.scheduled) then
-    -- make new logistics section if does not exist
+		-- make new logistics section if does not exist
 		if not self.logistic_section or not self.logistic_section.valid then
 			self.logistic_section =
 				self.entity.get_logistic_point(defines.logistic_member_index.logistic_container).add_section()
@@ -563,26 +563,29 @@ Depot.update_logistic_filters = function(self)
 			return
 		end
 
-    -- always allocate at least one drone
-    -- if the drone is carrying drones, allocate more to slot as necessary
-    -- TODO: figure out why this doesn't work :/
-		self.logistic_section.set_slot(
-			slot_index,
-			{ value = DRONE_NAME, min = 1 + safe_number(self.scheduled[DRONE_NAME]) }
-		)
+		-- preprocess drone slots (in case drone is delivering drones)
+		if self.scheduled and self.scheduled[DRONE_NAME] then
+			for quality, count in pairs(self.scheduled[DRONE_NAME]) do
+				self.logistic_section.set_slot(
+					slot_index,
+					{ value = { name = DRONE_NAME, quality = quality }, min = 1 + safe_number(count) }
+				)
+			end
+		else
+			-- always allocate at least one drone
+			self.logistic_section.set_slot(slot_index, { value = { name = DRONE_NAME, quality = "normal" }, min = 1 })
+		end
 
-    -- set the rest of the slots based on schedule pairs
-    slot_index = slot_index + 1
+		-- set the rest of the slots based on schedule pairs
+		slot_index = slot_index + 1
 		for name, quality_count in pairs(self.scheduled) do
 			for quality, count in pairs(quality_count) do
+				-- ignore drones, since they're already processed
 				if name ~= DRONE_NAME then
-					self.logistic_section.set_slot(
-						slot_index,
-						{
-							value = { name = name, quality = quality },
-							min = safe_number(count),
-						}
-					)
+					self.logistic_section.set_slot(slot_index, {
+						value = { name = name, quality = quality },
+						min = safe_number(count),
+					})
 					slot_index = slot_index + 1
 				end
 			end
