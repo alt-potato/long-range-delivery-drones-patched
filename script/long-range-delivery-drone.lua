@@ -23,12 +23,13 @@ local script_data = {
 	drone_update_schedule = {},
 	gui_updates = {},
 }
+local attrition_rate = settings.global["long-range-delivery-drones-patched-drone-attrition-rate"].value
 
 local ceil = math.ceil
 local floor = math.floor
 local min = math.min
 local max = math.max
-local atan2 = math.atan2 -- math.atan2 is deprecated?
+local atan2 = math.atan2
 local tau = 2 * math.pi
 local table_insert = table.insert
 local sin = math.sin
