@@ -320,7 +320,6 @@ Drone.deliver_to_target = function(self)
 
 	-- if there is nothing to deliver, why are we even here?
 	if not quality_count then
-		self:say("Nothing to deliver! How did we get here?")
 		self:schedule_suicide()
 		return
 	end
