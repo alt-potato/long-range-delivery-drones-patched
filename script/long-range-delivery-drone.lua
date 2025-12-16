@@ -1497,32 +1497,35 @@ lib.on_load = function()
 end
 
 lib.on_configuration_changed = function(changed_data)
-	if not storage.regenerate_data_migration then
-		storage.regenerate_data_migration = true
-		script_data = {
-			request_depots = {},
-			depots = {},
-			depot_map = {},
-			depot_update_buckets = {},
-			drones = {},
-			drone_update_schedule = {},
-			gui_updates = {},
-		}
-		storage.long_range_delivery_drone = script_data
+	local active_drones = script_data.drones or {}
 
-		for _, surface in pairs(game.surfaces) do
-			local drones = surface.find_entities_filtered({ name = DRONE_NAME })
-			for _, drone in pairs(drones) do
+	script_data = {
+		request_depots = {},
+		depots = {},
+		depot_map = {},
+		depot_update_buckets = {},
+		drones = {},
+		drone_update_schedule = {},
+		gui_updates = {},
+	}
+	storage.long_range_delivery_drone = script_data
+
+	for _, surface in pairs(game.surfaces) do
+		-- only destroy orphaned drones (not in old drone tracking table)
+		local drones = surface.find_entities_filtered({ name = DRONE_NAME })
+		for _, drone in pairs(drones) do
+			if not active_drones[drone.unit_number] then
+				log("Found orphaned drone " .. drone.unit_number .. " at position " .. drone.position.x .. ", " .. drone.position.y .. " with inventory " .. serpent.line(drone.get_inventory(defines.inventory.chest)) .. ", destroying")
 				drone.destroy()
 			end
-			local depots = surface.find_entities_filtered({ name = "long-range-delivery-drone-depot" })
-			for _, depot in pairs(depots) do
-				depot_created({ source_entity = depot })
-			end
-			local request_depots = surface.find_entities_filtered({ name = "long-range-delivery-drone-request-depot" })
-			for _, request_depot in pairs(request_depots) do
-				request_depot_created({ source_entity = request_depot })
-			end
+		end
+		local depots = surface.find_entities_filtered({ name = "long-range-delivery-drone-depot" })
+		for _, depot in pairs(depots) do
+			depot_created({ source_entity = depot })
+		end
+		local request_depots = surface.find_entities_filtered({ name = "long-range-delivery-drone-request-depot" })
+		for _, request_depot in pairs(request_depots) do
+			request_depot_created({ source_entity = request_depot })
 		end
 	end
 end
