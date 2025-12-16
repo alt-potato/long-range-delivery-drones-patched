@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.2.1
+Date: 2025-12-16
+  Changes:
+    - Fixed a weird crash involving untracked drones with unreasonable positions. The mod should now properly destroy untracked drones on configuration change.
+---------------------------------------------------------------------------------------------------
 Version: 2.2.0
 Date: 2025-12-14
   Changes:
