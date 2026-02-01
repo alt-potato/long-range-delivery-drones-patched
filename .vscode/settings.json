@@ -3,5 +3,9 @@
   "Lua.workspace.userThirdParty": [
     "/home/cas/.config/Code/User/workspaceStorage/46ef1e2b6359737338b40a996adc419c/justarandomgeek.factoriomod-debug/sumneko-3rd"
   ],
-  "Lua.workspace.checkThirdParty": "ApplyInMemory"
+  "Lua.workspace.checkThirdParty": "ApplyInMemory",
+  "Lua.diagnostics.globals": [
+    "circuit_connector_definitions",
+    "universal_connector_template"
+  ]
 }
