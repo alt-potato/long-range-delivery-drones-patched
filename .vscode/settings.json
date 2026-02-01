@@ -1,20 +1,7 @@
 {
-  "factorio.versions": [
-    {
-      "name": "fetched",
-      "factorioPath": "c:\\Factorio\\bin\\fetched\\factorio.exe"
-    }
+  "Lua.runtime.version": "Lua 5.2",
+  "Lua.workspace.userThirdParty": [
+    "/home/cas/.config/Code/User/workspaceStorage/46ef1e2b6359737338b40a996adc419c/justarandomgeek.factoriomod-debug/sumneko-3rd"
   ],
-  "Lua.diagnostics.disable": [
-    "name-style-check",
-    "codestyle-check",
-    "undefined-global",
-    "spell-check"
-  ],
-  "Lua.diagnostics.globals": [
-    "util",
-    "sounds",
-    "hit_effects"
-  ],
-  "Lua.runtime.version": "Lua 5.2"
+  "Lua.workspace.checkThirdParty": "ApplyInMemory"
 }
