@@ -1,3 +1,5 @@
+local util = require("util")
+
 local overlay_size = 24
 local stack_size = 16
 local variation_count = 8

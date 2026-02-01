@@ -6,6 +6,16 @@
   "Lua.workspace.checkThirdParty": "ApplyInMemory",
   "Lua.diagnostics.globals": [
     "circuit_connector_definitions",
-    "universal_connector_template"
+    "universal_connector_template",
+    "settings",
+    "script",
+    "defines",
+    "data",
+    "rendering",
+    "prototypes",
+    "game",
+    "storage",
+    "log",
+    "serpent"
   ]
 }

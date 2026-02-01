@@ -1,5 +1,6 @@
+local util = require("util")
 local item_sounds = require("__base__.prototypes.item_sounds")
-local base_path = require("lib.meta").base_path
+local base_path = require("lib.global").consts.BASE_PATH
 
 local request_depot = {
 	type = "logistic-container",
