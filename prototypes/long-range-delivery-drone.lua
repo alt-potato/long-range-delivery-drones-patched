@@ -5,7 +5,6 @@ local base_path = require("lib.global").consts.BASE_PATH
 local delivery_drone = {
 	type = "car",
 	name = "long-range-delivery-drone",
-	localised_name = { "long-range-delivery-drone" },
 	icon = base_path .. "/graphics/icons/drone-item-icon.png",
 	icon_size = 64,
 	flags = {
@@ -350,22 +349,22 @@ local drone_shadow_animation = {
 	--shift = {5, 5},
 	stripes = {
 		{
-			filename = base_path .. "/graphics/entity//drone-sh-a.png",
+			filename = base_path .. "/graphics/entity/drone-sh-a.png",
 			width_in_frames = 8,
 			height_in_frames = 8,
 		},
 		{
-			filename = base_path .. "/graphics/entity//drone-sh-b.png",
+			filename = base_path .. "/graphics/entity/drone-sh-b.png",
 			width_in_frames = 8,
 			height_in_frames = 8,
 		},
 		{
-			filename = base_path .. "/graphics/entity//drone-sh-c.png",
+			filename = base_path .. "/graphics/entity/drone-sh-c.png",
 			width_in_frames = 8,
 			height_in_frames = 8,
 		},
 		{
-			filename = base_path .. "/graphics/entity//drone-sh-d.png",
+			filename = base_path .. "/graphics/entity/drone-sh-d.png",
 			width_in_frames = 8,
 			height_in_frames = 8,
 		},
@@ -381,22 +380,22 @@ local animation = {
 			scale = 0.5,
 			stripes = {
 				{
-					filename = base_path .. "/graphics/entity//drone-a.png",
+					filename = base_path .. "/graphics/entity/drone-a.png",
 					width_in_frames = 8,
 					height_in_frames = 8,
 				},
 				{
-					filename = base_path .. "/graphics/entity//drone-b.png",
+					filename = base_path .. "/graphics/entity/drone-b.png",
 					width_in_frames = 8,
 					height_in_frames = 8,
 				},
 				{
-					filename = base_path .. "/graphics/entity//drone-c.png",
+					filename = base_path .. "/graphics/entity/drone-c.png",
 					width_in_frames = 8,
 					height_in_frames = 8,
 				},
 				{
-					filename = base_path .. "/graphics/entity//drone-d.png",
+					filename = base_path .. "/graphics/entity/drone-d.png",
 					width_in_frames = 8,
 					height_in_frames = 8,
 				},
@@ -415,22 +414,22 @@ local shadow_animation = {
 			draw_as_shadow = true,
 			stripes = {
 				{
-					filename = base_path .. "/graphics/entity//drone-sh-a.png",
+					filename = base_path .. "/graphics/entity/drone-sh-a.png",
 					width_in_frames = 8,
 					height_in_frames = 8,
 				},
 				{
-					filename = base_path .. "/graphics/entity//drone-sh-b.png",
+					filename = base_path .. "/graphics/entity/drone-sh-b.png",
 					width_in_frames = 8,
 					height_in_frames = 8,
 				},
 				{
-					filename = base_path .. "/graphics/entity//drone-sh-c.png",
+					filename = base_path .. "/graphics/entity/drone-sh-c.png",
 					width_in_frames = 8,
 					height_in_frames = 8,
 				},
 				{
-					filename = base_path .. "/graphics/entity//drone-sh-d.png",
+					filename = base_path .. "/graphics/entity/drone-sh-d.png",
 					width_in_frames = 8,
 					height_in_frames = 8,
 				},
