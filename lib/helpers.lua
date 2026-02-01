@@ -3,11 +3,6 @@ local script_data = require("lib.global").data
 
 local lib = {}
 
----@alias LuaEntity table
----@alias LuaInventory table
----@alias LuaLogisticPoint table
----@alias LuaPlayer table
-
 --#region MATH
 
 ---@class vector2
