@@ -1,4 +1,4 @@
-local base_path = require("util.meta").base_path
+local base_path = require("lib.meta").base_path
 
 local technology = {
 	type = "technology",

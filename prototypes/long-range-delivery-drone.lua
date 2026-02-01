@@ -1,5 +1,5 @@
 local item_sounds = require("__base__.prototypes.item_sounds")
-local base_path = require("util.meta").base_path
+local base_path = require("lib.meta").base_path
 
 local delivery_drone = {
 	type = "car",

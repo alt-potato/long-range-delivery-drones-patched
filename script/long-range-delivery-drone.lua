@@ -26,27 +26,7 @@ local script_data = {
 }
 local attrition_rate = settings.global["long-range-delivery-drones-patched-drone-attrition-rate"].value
 
-local ceil = math.ceil
-local floor = math.floor
-local min = math.min
-local max = math.max
-local atan2 = math.atan2
-local tau = 2 * math.pi
-local table_insert = table.insert
-local sin = math.sin
-local cos = math.cos
-local random = math.random
-
-local logistic_curve = function(x)
-	local a = (x / (1 - x)) ^ 2
-	return 1 - (1 / (1 + a))
-end
-
-local distance_squared = function(a, b)
-	local dx = a.x - b.x
-	local dy = a.y - b.y
-	return dx * dx + dy * dy
-end
+local util = require("lib.util")
 
 local stack_sizes_cache = {}
 local get_stack_size = function(item_name)
@@ -101,7 +81,7 @@ end
 
 local entity_say = function(entity, text, tint)
 	if entity.valid then
-		-- flying-text appears to be deprecated and needs replacement
+		-- flying-text appears to be deprecated in 2.0 and needs replacement
 		entity.surface.create_entity({
 			name = "flying-text",
 			position = entity.position,
@@ -178,7 +158,7 @@ Drone.get_orientation_to_position = function(self, position)
 	local origin = self.entity.position
 	local dx = position.x - origin.x
 	local dy = position.y - origin.y
-	local orientation = (atan2(dy, dx) / tau) + 0.25
+	local orientation = (math.atan2(dy, dx) / util.tau) + 0.25
 	if orientation < 0 then
 		orientation = orientation + 1
 	elseif orientation > 1 then
@@ -218,11 +198,11 @@ Drone.get_time_to_next_update = function(self)
 		distance = self:get_distance_to_target() - DELIVERY_DISTANCE
 	end
 	local time = distance / self.entity.speed
-	local ticks = floor(time * 0.5)
+	local ticks = math.floor(time * 0.5)
 	if ticks < 1 then
 		return 1
 	end
-	return min(ticks, DRONE_MAX_UPDATE_INTERVAL)
+	return math.min(ticks, DRONE_MAX_UPDATE_INTERVAL)
 end
 
 Drone.schedule_next_update = function(self, time)
@@ -237,19 +217,11 @@ Drone.schedule_next_update = function(self, time)
 	--self:say(tick - game.tick)
 end
 
-local get_rad = function(orientation)
-	local adjusted_orientation = orientation - 0.25
-	if adjusted_orientation < 0 then
-		adjusted_orientation = adjusted_orientation + 1
-	end
-	return adjusted_orientation * tau
-end
-
 Drone.get_movement = function(self, orientation_variation)
 	local orientation = self.entity.orientation + ((0.5 - math.random()) * (orientation_variation or 0))
 	local speed = self.entity.speed
-	local dx = speed * cos(get_rad(orientation))
-	local dy = speed * sin(get_rad(orientation))
+	local dx = speed * math.cos(util.to_rad(orientation))
+	local dy = speed * math.sin(util.to_rad(orientation))
 	return { dx, dy }
 end
 
@@ -282,14 +254,14 @@ Drone.schedule_suicide = function(self)
 	if self.delivery_target then
 		self.delivery_target:remove_targeting_me(self)
 	end
-	self.tick_to_suicide = game.tick + random(120, 300)
-	self.suicide_orientation = self.entity.orientation + ((0.5 - random()) * 2)
-	self:schedule_next_update(random(1, 30))
+	self.tick_to_suicide = game.tick + math.random(120, 300)
+	self.suicide_orientation = self.entity.orientation + ((0.5 - math.random()) * 2)
+	self:schedule_next_update(math.random(1, 30))
 end
 
 Drone.schedule_return = function(self)
 	-- random chance of attrition if attrition_rate > 0
-	local r = random()
+	local r = math.random()
 	if attrition_rate > 0 and (attrition_rate >= 1 or r < attrition_rate) then
 		-- self:say("i am die thank you forever")
 		self:schedule_suicide()
@@ -329,7 +301,7 @@ Drone.make_delivery_particle = function(self, item_name)
 	local distance = self:get_distance_to_target()
 	local position = self.entity.position
 	local speed = self.entity.speed
-	local time = 5 * ceil((distance / (speed * 0.85)) / 5)
+	local time = 5 * math.ceil((distance / (speed * 0.85)) / 5)
 	local delivery_height = DRONE_HEIGHT - 0.60
 	local vertical_speed = -delivery_height / time
 	local source_position = { position.x, position.y + delivery_height }
@@ -362,7 +334,7 @@ Drone.deliver_to_target = function(self)
 
 	local quality, count = next(quality_count)
 	if name and quality and count then
-		count = min(count, get_stack_size(name))
+		count = math.min(count, get_stack_size(name))
 		local target_scheduled = self.delivery_target.scheduled
 		local removed = self.inventory.remove({ name = name, quality = quality, count = count })
 		if removed > 0 then
@@ -395,7 +367,7 @@ Drone.deliver_to_target = function(self)
 		return
 	end
 
-	self:schedule_next_update(ceil(delivery_time * 2) + random(10, 30))
+	self:schedule_next_update(math.ceil(delivery_time * 2) + math.random(10, 30))
 end
 
 Drone.cleanup = function(self)
@@ -471,7 +443,7 @@ Drone.update_shadow_height = function(self)
 	if not shadow then
 		return
 	end
-	local height = (logistic_curve(self.entity.speed / DRONE_MAX_SPEED)) * DRONE_HEIGHT
+	local height = (util.logistic_curve(self.entity.speed / DRONE_MAX_SPEED)) * DRONE_HEIGHT
 	shadow.target = { entity = self.entity, offset = { height, height } }
 end
 
@@ -485,7 +457,7 @@ end
 
 Drone.get_state_description = function(self)
 	local text = ""
-	local distance = ceil(self:get_distance_to_target())
+	local distance = math.ceil(self:get_distance_to_target())
 	text = text .. "[color=34,181,255][" .. distance .. "m][/color]"
 	for name, quality_count in pairs(self.scheduled) do
 		for quality, count in pairs(quality_count) do
@@ -601,21 +573,17 @@ Depot.get_available_capacity = function(self, item_name, item_quality)
 	for name, quality_count in pairs(self.scheduled) do
 		for quality, count in pairs(quality_count) do
 			if name ~= item_name or quality ~= item_quality then
-				stacks = stacks - ceil(count / get_stack_size(name))
+				stacks = stacks - math.ceil(count / get_stack_size(name))
 			end
 		end
 	end
 	if not item_name then
 		return stacks
 	end
-	return floor(
+	return math.floor(
 		stacks * (get_stack_size(item_name))
 			- (self.scheduled[item_name] and self.scheduled[item_name][item_quality] or 0)
 	)
-end
-
-local function safe_number(value)
-	return type(value) == "number" and value or 0
 end
 
 Depot.update_logistic_filters = function(self)
@@ -638,7 +606,7 @@ Depot.update_logistic_filters = function(self)
 			for quality, count in pairs(self.scheduled[DRONE_NAME]) do
 				self.logistic_section.set_slot(
 					slot_index,
-					{ value = { name = DRONE_NAME, quality = quality }, min = 1 + safe_number(count) }
+					{ value = { name = DRONE_NAME, quality = quality }, min = 1 + util.safe_number(count) }
 				)
 			end
 		else
@@ -654,7 +622,7 @@ Depot.update_logistic_filters = function(self)
 				if name ~= DRONE_NAME then
 					self.logistic_section.set_slot(slot_index, {
 						value = { name = name, quality = quality },
-						min = safe_number(count),
+						min = util.safe_number(count),
 					})
 					slot_index = slot_index + 1
 				end
@@ -676,7 +644,7 @@ Depot.delivery_requested = function(self, request_depot, item_name, item_quality
 	if self.delivery_target and self.delivery_target ~= request_depot then
 		error("Trying to schedule a delivery to another target")
 	end
-	item_count = min(item_count, self:get_available_capacity(item_name, item_quality))
+	item_count = math.min(item_count, self:get_available_capacity(item_name, item_quality))
 	if item_count == 0 then
 		return 0
 	end
@@ -750,15 +718,6 @@ Depot.transfer_package = function(self, drone)
 	self:update_logistic_filters()
 end
 
-local empty_color = { r = 0, g = 0, b = 0 }
-local get_force_color = function(force)
-	local index, player = next(force.players)
-	if player then
-		return player.color
-	end
-	return empty_color
-end
-
 Depot.send_drone = function(self)
 	local target = self.delivery_target
 	if not target then
@@ -777,7 +736,7 @@ Depot.send_drone = function(self)
 		position = self.position,
 		force = force,
 	})
-	entity.color = get_force_color(force)
+	entity.color = util.get_force_color(force)
 
 	force.get_item_production_statistics(self.entity.surface).on_flow(DRONE_NAME, -1)
 
@@ -858,7 +817,7 @@ Depot.descope_order = function(self)
 	local target_scheduled = self.delivery_target.scheduled
 	for name, quality_count in pairs(scheduled) do
 		for quality, count in pairs(quality_count) do
-			local has_count = min(get_item_count({ name = name, quality = quality }), count)
+			local has_count = math.min(get_item_count({ name = name, quality = quality }), count)
 			scheduled[name][quality] = has_count
 			if scheduled[name][quality] <= 0 then
 				scheduled[name][quality] = nil
@@ -994,7 +953,7 @@ Request_depot.get_closest = function(self, depots)
 	local closest_distance = math.huge
 	local position = self.position
 	for unit_number, depot in pairs(depots) do
-		local distance = distance_squared(position, depot.position)
+		local distance = util.distance_squared(position, depot.position)
 		if distance < closest_distance then
 			closest_depot = depot
 			closest_distance = distance
@@ -1019,7 +978,7 @@ Request_depot.try_to_schedule_delivery = function(self, item_name, item_quality,
 
 	local stack_size = get_stack_size(item_name)
 
-	local request_count = min(item_count, stack_size * MAX_DELIVERY_STACKS)
+	local request_count = math.min(item_count, stack_size * MAX_DELIVERY_STACKS)
 
 	local depots_to_check = { {}, {}, {}, {} }
 
@@ -1166,7 +1125,7 @@ local add_or_update_targeting_panel = function(targeting_me, gui)
 	end
 	local label = frame.children[1].children[1].distance_to_target
 	if label then
-		label.caption = "[" .. ceil(targeting_me:get_distance_to_target()) .. "m]"
+		label.caption = "[" .. math.ceil(targeting_me:get_distance_to_target()) .. "m]"
 	end
 	local table = frame.children[2]
 	--local deep = frame.add{type = "frame", style = "deep_frame_in_shallow_frame"}
@@ -1515,7 +1474,17 @@ lib.on_configuration_changed = function(changed_data)
 		local drones = surface.find_entities_filtered({ name = DRONE_NAME })
 		for _, drone in pairs(drones) do
 			if not active_drones[drone.unit_number] then
-				log("Found orphaned drone " .. drone.unit_number .. " at position " .. drone.position.x .. ", " .. drone.position.y .. " with inventory " .. serpent.line(drone.get_inventory(defines.inventory.chest)) .. ", destroying")
+				log(
+					"Found orphaned drone "
+						.. drone.unit_number
+						.. " at position "
+						.. drone.position.x
+						.. ", "
+						.. drone.position.y
+						.. " with inventory "
+						.. serpent.line(drone.get_inventory(defines.inventory.chest))
+						.. ", destroying"
+				)
 				drone.destroy()
 			end
 		end
