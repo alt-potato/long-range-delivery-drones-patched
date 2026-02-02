@@ -36,14 +36,28 @@ lib.consts = {
 }
 lib.consts.DELIVERY_OFFSET = { 0, -lib.consts.DRONE_HEIGHT }
 
-lib.ATTRITION_RATE = nil, -- set at runtime, not readable in data stage
+lib.ATTRITION_RATE = nil -- set at runtime, not readable in data stage
 
+---@alias force_name string
+---@alias surface_name string
+---@alias any_depot Depot|RequestDepot
+
+---@class script_data
+---@field request_depots table<integer, RequestDepot>
+---@field depots table<integer, Depot>
+---@field depot_map table<force_name, table<surface_name, Depot[]>>
+---@field depot_update_buckets table<integer, any_depot[]>
+---@field drones Drone[]
+---@field drone_update_schedule table
+---@field gui_updates table
+---@field next_depot_update_index integer?
+---@field next_request_depot_update_index integer?
 lib.data = {
-	request_depots = {}, ---@type table<integer, RequestDepot>
-	depots = {}, ---@type table<integer, Depot>
+	request_depots = {},
+	depots = {},
 	depot_map = {},
 	depot_update_buckets = {},
-	drones = {}, ---@type Drone[]
+	drones = {},
 	drone_update_schedule = {},
 	gui_updates = {},
 	next_depot_update_index = nil,
