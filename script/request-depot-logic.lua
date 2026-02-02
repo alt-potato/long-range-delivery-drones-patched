@@ -19,7 +19,7 @@ local add_to_depots = function(self)
 end
 
 RequestDepot.new = function(entity)
-	log("RequestDepot.new")
+	-- log("RequestDepot.new")
 	local self = {
 		entity = entity,
 		unit_number = entity.unit_number,
@@ -42,19 +42,19 @@ RequestDepot.say = function(self, text, y_offset)
 end
 
 RequestDepot.add_targeting_me = function(self, other)
-	log("RequestDepot.add_targeting_me")
+	-- log("RequestDepot.add_targeting_me")
 	self.targeting_me = self.targeting_me or {}
 	self.targeting_me[other.unit_number] = other
 end
 
 RequestDepot.remove_targeting_me = function(self, other)
-	log("RequestDepot.remove_targeting_me")
+	-- log("RequestDepot.remove_targeting_me")
 	self.targeting_me = self.targeting_me or {}
 	self.targeting_me[other.unit_number] = nil
 end
 
 RequestDepot.get_closest = function(self, depots)
-	log("RequestDepot.get_closest")
+	-- log("RequestDepot.get_closest")
 	local closest_depot = nil
 	local closest_distance = math.huge
 	local position = self.position
@@ -153,8 +153,8 @@ RequestDepot.try_to_schedule_delivery = function(self, item_name, item_quality, 
 	self.scheduled[item_name] = self.scheduled[item_name] or {}
 	self.scheduled[item_name][item_quality] = (self.scheduled[item_name][item_quality] or 0) + scheduled_count
 
-    log("request scheduled successfully! (probably)")
-    log(serpent.block(closest))
+    -- log("request scheduled successfully! (probably)")
+    -- log(serpent.block(closest))
 end
 
 RequestDepot.update_gui = function(self, player)

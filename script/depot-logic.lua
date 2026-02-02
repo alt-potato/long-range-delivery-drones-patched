@@ -13,8 +13,8 @@ end
 ---@field unit_number integer
 ---@field position vector2
 ---@field scheduled table
----@field inventory table
----@field logistic_section table
+---@field inventory LuaInventory
+---@field logistic_section LuaLogisticSection?
 ---@field delivery_target RequestDepot
 ---@field tick_of_recieved_order integer?
 local Depot = {}
@@ -122,7 +122,7 @@ Depot.update_logistic_filters = function(self)
 end
 
 Depot.delivery_requested = function(self, request_depot, item_name, item_quality, item_count)
-	log('Delivery requested: "' .. item_name .. '" (' .. item_quality .. ") x" .. item_count)
+	-- log('Delivery requested: "' .. item_name .. '" (' .. item_quality .. ") x" .. item_count)
 	if self.delivery_target and self.delivery_target ~= request_depot then
 		error("Trying to schedule a delivery to another target")
 	end
@@ -201,7 +201,7 @@ Depot.transfer_package = function(self, drone)
 end
 
 Depot.send_drone = function(self)
-	log("Depot.send_drone")
+	-- log("Depot.send_drone")
 	local target = self.delivery_target
 	if not target then
 		error("No target?")
@@ -264,7 +264,7 @@ Depot.cleanup = function(self)
 end
 
 Depot.has_all_fulfilled = function(self)
-	log("Depot.has_all_fulfilled?")
+	-- log("Depot.has_all_fulfilled?")
 	local scheduled = self.scheduled
 	local inventory = self.inventory
 	local get_item_count = inventory.get_item_count
@@ -276,12 +276,12 @@ Depot.has_all_fulfilled = function(self)
 				has_count = has_count - 1
 			end
 			if has_count < count then
-				log("no it is not")
+				-- log("no it is not")
 				return
 			end
 		end
 	end
-	log("yes it is")
+	-- log("yes it is")
 	return true
 end
 
@@ -340,7 +340,7 @@ Depot.check_minimal_order_time = function(self)
 end
 
 Depot.check_send_drone = function(self)
-	log("Depot.check_send_drone")
+	-- log("Depot.check_send_drone")
 	if self:check_minimal_order_time() then
 		return
 	end
@@ -372,17 +372,11 @@ Depot.get_supply_counts = function(self, item_name, item_quality)
 end
 
 Depot.update = function(self)
-	log("Depot.update " .. self.entity.unit_number)
 	if not self.delivery_target then
-		log("yo there is no delivery target here")
-		log(serpent.block(self))
 		return
 	end
 
-	log("mimimi")
-
 	if not self.entity.valid then
-		log("uhhhhhhhhhhhhhhhhhhh")
 		self:cleanup()
 		return true
 	end
