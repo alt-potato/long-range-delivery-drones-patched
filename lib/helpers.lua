@@ -72,10 +72,10 @@ end
 ---@param color? rgb
 ---@param offset? vector2
 lib.entity_say = function(entity, text, color, offset)
-	log((entity.name or "someone") .. " said: " .. text)
+	-- log((entity.name or "someone") .. " said: " .. text)
 
 	local DEBUG = true
-	if not DEBUG then
+	if not DEBUG or not entity or not entity.valid then
 		return
 	end
 
