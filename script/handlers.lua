@@ -7,7 +7,7 @@ local RequestDepot = require("script.request-depot-logic")
 local lib = {}
 
 local depot_created = function(event)
-	log("depot_created")
+	-- log("depot_created")
 	local entity = event.source_entity
 	if not (entity and entity.valid) then
 		return
@@ -17,7 +17,7 @@ local depot_created = function(event)
 end
 
 local request_depot_created = function(event)
-	log("request_depot_created")
+	-- log("request_depot_created")
 	local entity = event.source_entity
 	if not (entity and entity.valid) then
 		return
@@ -41,7 +41,7 @@ end
 local on_runtime_mod_setting_changed = function(event)
 	-- dynamically set runtime settings
 	if event.setting == "long-range-delivery-drones-patched-drone-attrition-rate" then
-		consts.ATTRITION_RATE = settings.global["long-range-delivery-drones-patched-drone-attrition-rate"].value
+		global.ATTRITION_RATE = settings.global["long-range-delivery-drones-patched-drone-attrition-rate"].value
 	end
 end
 
@@ -50,8 +50,8 @@ local update_request_depots = function(tick)
 	if not index and tick % consts.DEPOT_UPDATE_BREAK_TIME ~= 0 then
 		return
 	end
-	log("update_request_depots: (" .. (tick or "nil") .. "," .. (index or "nil") .. ")")
-	log("data: " .. serpent.block(global.data))
+	-- log("update_request_depots: (" .. (tick or "nil") .. "," .. (index or "nil") .. ")")
+	-- log("data: " .. serpent.block(global.data))
 
 	local unit_number, req_depot = next(global.data.request_depots, index)
 	if not unit_number then
@@ -78,8 +78,8 @@ local update_depots = function(tick)
 	if not index and tick % consts.DEPOT_UPDATE_BREAK_TIME ~= 0 then
 		return
 	end
-	log("update_depots: (" .. (tick or "nil") .. "," .. (index or "nil") .. ")")
-	log("data: " .. serpent.block(global.data))
+	-- log("update_depots: (" .. (tick or "nil") .. "," .. (index or "nil") .. ")")
+	-- log("data: " .. serpent.block(global.data))
 
 	local unit_number, depot = next(global.data.depots, index)
 	if not unit_number then
@@ -87,7 +87,7 @@ local update_depots = function(tick)
 		return
 	end
 	if depot then
-		log("updating depot " .. unit_number .. "...")
+		-- log("updating depot " .. unit_number .. "...")
 		if depot:update() then
 			global.data.depots[unit_number] = nil
 			global.data.next_depot_update_index = nil
@@ -164,7 +164,7 @@ local on_tick = function(event)
 end
 
 local on_gui_opened = function(event)
-	log("on_gui_opened")
+	-- log("on_gui_opened")
 	local entity = event.entity
 	if not (entity and entity.valid) then
 		return
@@ -186,7 +186,7 @@ local on_gui_opened = function(event)
 end
 
 local open_on_map = function(player, entity)
-	log("open_on_map")
+	-- log("open_on_map")
 	if not (entity and entity.valid) then
 		return
 	end
@@ -203,7 +203,7 @@ local open_on_map = function(player, entity)
 end
 
 local on_gui_click = function(event)
-	log("on_gui_click")
+	-- log("on_gui_click")
 	local gui = event.element
 	if not (gui and gui.valid) then
 		return
@@ -242,18 +242,18 @@ lib.events = {
 }
 
 lib.on_init = function()
-	log("on_init")
+	-- log("on_init")
 	storage.long_range_delivery_drone = storage.long_range_delivery_drone or global.data
 	storage.regenerate_data_migration = true
 end
 
 lib.on_load = function()
-	log("on_load")
+	-- log("on_load")
 	global.data = storage.long_range_delivery_drone or global.data
 end
 
 lib.on_configuration_changed = function(changed_data)
-	log("on_configuration_changed")
+	-- log("on_configuration_changed")
 	local active_drones = global.data.drones or {}
 
 	global.clear_data()

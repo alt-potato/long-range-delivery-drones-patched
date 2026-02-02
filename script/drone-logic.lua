@@ -2,7 +2,7 @@ local helpers = require("lib.helpers")
 local consts = require("lib.global").consts
 local global = require("lib.global")
 
-consts.ATTRITION_RATE = settings.global["long-range-delivery-drones-patched-drone-attrition-rate"].value
+global.ATTRITION_RATE = settings.global["long-range-delivery-drones-patched-drone-attrition-rate"].value
 
 ---@class Drone
 ---@field entity LuaEntity

@@ -11,9 +11,6 @@ lib.consts = {
 	MOD_NAME = MOD_NAME,
 	BASE_PATH = "__" .. MOD_NAME .. "__",
 
-	-- SETTINGS
-	ATTRITION_RATE = nil, -- set at runtime, not readable in data stage
-
 	-- DEPOT
 
 	DEPOT_UPDATE_INTERVAL = 101,
@@ -38,6 +35,8 @@ lib.consts = {
 	DEPOT_ORDER_MINIMAL_TIME = 60,
 }
 lib.consts.DELIVERY_OFFSET = { 0, -lib.consts.DRONE_HEIGHT }
+
+lib.ATTRITION_RATE = nil, -- set at runtime, not readable in data stage
 
 lib.data = {
 	request_depots = {}, ---@type table<integer, RequestDepot>
