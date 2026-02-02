@@ -177,7 +177,8 @@ end
 Drone.schedule_return = function(self)
 	-- random chance of attrition if ATTRITION_RATE > 0
 	local r = math.random()
-	if consts.ATTRITION_RATE > 0 and (consts.ATTRITION_RATE >= 1 or r < consts.ATTRITION_RATE) then
+	local attrition_rate = global.ATTRITION_RATE
+	if attrition_rate > 0 and (attrition_rate >= 1 or r < attrition_rate) then
 		self:say("i am die thank you forever")
 		self:schedule_suicide()
 		return
